@@ -20,7 +20,7 @@ public class AppWorksService implements AWServiceContextHandler {
     @AWServiceStartupComplete
     @Override
     public void onStart(String appName) {
-        boostrapService(appName);
+        bootstrapService(appName);
     }
 
     @Override
@@ -28,7 +28,7 @@ public class AppWorksService implements AWServiceContextHandler {
         LOG.info("AppWorksService#onStop() called for \"" + appName + "\"");
     }
 
-    private void boostrapService(String appName) {
+    private void bootstrapService(String appName) {
         LOG.info("AppWorksService#onStart() - initializing service \"" + appName + "\"");
         ServiceClient serviceClient = new ServiceClient();
 
