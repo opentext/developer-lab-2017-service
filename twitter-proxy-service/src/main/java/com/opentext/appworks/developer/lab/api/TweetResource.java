@@ -21,9 +21,6 @@ public class TweetResource {
 
     @GET
     public Response searchForTweets(@QueryParam("searchTerm") String searchTerm,
-                                    @QueryParam("latitude") String latitude,
-                                    @QueryParam("longitude") String longitude,
-                                    @QueryParam("radius") String radius,
                                     @QueryParam("requiresMedia") @DefaultValue("false") String requiresMedia) {
         if (searchTerm == null || searchTerm.isEmpty()) {
             return errorResponse(400, "Please provide a 'searchTerm' query parameter");
