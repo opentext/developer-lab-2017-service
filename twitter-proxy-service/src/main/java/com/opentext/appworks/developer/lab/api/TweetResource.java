@@ -5,7 +5,6 @@ package com.opentext.appworks.developer.lab.api;
 
 import com.opentext.appworks.developer.lab.services.TwitterClientService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.social.twitter.api.Tweet;
 
 import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
@@ -22,6 +21,9 @@ public class TweetResource {
 
     @GET
     public Response searchForTweets(@QueryParam("searchTerm") String searchTerm,
+                                    @QueryParam("latitude") String latitude,
+                                    @QueryParam("longitude") String longitude,
+                                    @QueryParam("radius") String radius,
                                     @QueryParam("requiresMedia") @DefaultValue("false") String requiresMedia) {
         if (searchTerm == null || searchTerm.isEmpty()) {
             return errorResponse(400, "Please provide a 'searchTerm' query parameter");
@@ -39,7 +41,7 @@ public class TweetResource {
     public Response getTweetById(@PathParam("tweetId") String tweetId) {
         try {
             long id = Long.valueOf(tweetId);
-            Optional<Tweet> byId = twitterClientService.findById(id);
+            Optional<TwitterClientService.TweetWithLocation> byId = twitterClientService.findById(id);
             if (byId.isPresent()) {
                 return Response.ok(byId.get()).build();
             } else {

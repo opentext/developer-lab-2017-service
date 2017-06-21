@@ -37,15 +37,15 @@ public class TwitterClientServiceImplTest {
     @Test
     public void testSearchForTweets() {
         assertThat(underTest).isNotNull();
-        List<Tweet> tweets = underTest.search("Wayne Gretzky", false);
+        List<TwitterClientService.TweetWithLocation> tweets = underTest.search("Wayne Gretzky", false);
         assertThat(tweets).isNotEmpty();
 
-        tweets.forEach(tweet -> {
+        tweets.forEach(result -> {
             try {
-                Tweet status = twitterTemplate.timelineOperations().getStatus(tweet.getId());
+                Tweet status = twitterTemplate.timelineOperations().getStatus(result.getTweet().getId());
                 assertThat(status).isNotNull();
             } catch (Exception e) {
-                LOG.error("Failed to find current status of - " + tweet);
+                LOG.error("Failed to find current status of - " + result);
             }
 
         });
