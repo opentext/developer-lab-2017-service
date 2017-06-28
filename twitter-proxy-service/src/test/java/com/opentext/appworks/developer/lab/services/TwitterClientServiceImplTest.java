@@ -38,6 +38,7 @@ public class TwitterClientServiceImplTest {
     public void testSearchForTweets() {
         assertThat(underTest).isNotNull();
         List<TwitterClientService.TweetWithLocation> tweets = underTest.search("Wayne Gretzky", false);
+
         assertThat(tweets).isNotEmpty();
 
         tweets.forEach(result -> {

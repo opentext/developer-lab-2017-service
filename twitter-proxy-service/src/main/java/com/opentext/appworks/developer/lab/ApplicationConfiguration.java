@@ -3,12 +3,11 @@
  */
 package com.opentext.appworks.developer.lab;
 
+import com.opentext.appworks.developer.lab.services.DefaultSearchTermSettingManager;
 import com.opentext.appworks.developer.lab.services.TwitterClientServiceImpl;
+import com.opentext.otag.service.context.components.AWComponentContext;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.ComponentScan;
-import org.springframework.context.annotation.Configuration;
-import org.springframework.context.annotation.PropertySource;
+import org.springframework.context.annotation.*;
 import org.springframework.context.support.PropertySourcesPlaceholderConfigurer;
 import org.springframework.social.twitter.api.impl.TwitterTemplate;
 
@@ -36,6 +35,11 @@ public class ApplicationConfiguration {
     @Bean
     public TwitterClientServiceImpl twitterClientService() {
         return new TwitterClientServiceImpl(twitterTemplate());
+    }
+
+    @Bean @Lazy
+    public DefaultSearchTermSettingManager defaultSearchTermSettingManager() {
+        return AWComponentContext.getComponent(DefaultSearchTermSettingManager.class);
     }
 
 }

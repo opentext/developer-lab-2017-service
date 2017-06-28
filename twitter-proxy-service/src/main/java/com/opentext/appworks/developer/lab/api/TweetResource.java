@@ -3,8 +3,10 @@
  */
 package com.opentext.appworks.developer.lab.api;
 
+import com.opentext.appworks.developer.lab.services.DefaultSearchTermSettingManager;
 import com.opentext.appworks.developer.lab.services.TwitterClientService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Lazy;
 
 import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
@@ -19,11 +21,14 @@ public class TweetResource {
     @Autowired
     private TwitterClientService twitterClientService;
 
+    @Autowired @Lazy
+    private DefaultSearchTermSettingManager defaultSearchTermSettingManager;
+
     @GET
     public Response searchForTweets(@QueryParam("searchTerm") String searchTerm,
                                     @QueryParam("requiresMedia") @DefaultValue("false") String requiresMedia) {
         if (searchTerm == null || searchTerm.isEmpty()) {
-            return errorResponse(400, "Please provide a 'searchTerm' query parameter");
+            searchTerm = defaultSearchTermSettingManager.getDefaultSearchTerm();
         }
         try {
             boolean hasMedia = Boolean.valueOf(requiresMedia);
