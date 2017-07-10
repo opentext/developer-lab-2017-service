@@ -21,6 +21,8 @@ import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
+import static com.opentext.otag.sdk.util.StringUtil.isNullOrEmpty;
+
 public class TwitterClientServiceImpl implements TwitterClientService {
 
     private static final Logger LOG = LoggerFactory.getLogger(TwitterClientServiceImpl.class);
@@ -48,7 +50,8 @@ public class TwitterClientServiceImpl implements TwitterClientService {
     public List<TweetWithLocation> search(String searchTerm, boolean requiresMedia) {
         try {
             SearchResults search = twitterTemplate.searchOperations().search(searchTerm);
-            return search.getTweets()
+            List<Tweet> tweets = search.getTweets();
+            return tweets
                     .stream()
                     .filter(tweet -> !requiresMedia || tweet.hasMedia())
                     // convert
@@ -76,14 +79,16 @@ public class TwitterClientServiceImpl implements TwitterClientService {
 
     private LatLng getLocation(Tweet tweet) {
         String location = getTweetLocation(tweet);
-        try {
-            // ask Google's GeoCoding API for the details of the place
-            GeocodingResult[] results = GeocodingApi.geocode(geoContext, location).await();
-            if (results.length > 0) {
-                return results[0].geometry.location;
+        if (!isNullOrEmpty(location)) {
+            try {
+                // ask Google's GeoCoding API for the details of the place
+                GeocodingResult[] results = GeocodingApi.geocode(geoContext, location).await();
+                if (results.length > 0) {
+                    return results[0].geometry.location;
+                }
+            } catch (ApiException | InterruptedException | IOException e) {
+                LOG.error("We failed to search for the {} using the Google Maps API", location, e);
             }
-        } catch (ApiException | InterruptedException | IOException e) {
-            LOG.error("We failed to search for the {} using the Google Maps API", location, e);
         }
         return null;
     }
