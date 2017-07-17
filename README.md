@@ -4,6 +4,8 @@ A simple AppWorks service that provides an API for searching for Tweets. We expo
 
 This Maven project, when built, will produce twitter-proxy_1.0.0.zip, which can be deployed to the AppWorks Gateway 16.1.0 omwards (current version is 16.2.1).
 
+**NOTE:** The Twitter API key found in `/twitter-proxy-service/src/main/resources/application.properties` and the Google API key found in `com.opentext.appworks.developer.lab.services.TwitterClientServiceImpl` are no longer active. You need to supply your own for this service to be operational.
+
 # Open Text AppWorks service development kit info
 
 The SDK provides access to the set of utility classes required to interact with an instance of an AppWorks Gateway from an AppWorks Service. It covers AppWorks dedicated service deployment API, which is a limited subset of the full AppWorks administration API.
