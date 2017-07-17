@@ -12,9 +12,9 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 @SuppressWarnings("unused")
-public class AppWorksService implements AWServiceContextHandler {
+public class TwitterProxyService implements AWServiceContextHandler {
 
-    private static final Logger LOG = LoggerFactory.getLogger(AppWorksService.class);
+    private static final Logger LOG = LoggerFactory.getLogger(TwitterProxyService.class);
 
     // mark this method as the one that completes the deployment
     @AWServiceStartupComplete
@@ -25,18 +25,18 @@ public class AppWorksService implements AWServiceContextHandler {
 
     @Override
     public void onStop(String appName) {
-        LOG.info("AppWorksService#onStop() called for \"" + appName + "\"");
+        LOG.info("TwitterProxyService#onStop() called for \"" + appName + "\"");
     }
 
     private void bootstrapService(String appName) {
-        LOG.info("AppWorksService#onStart() - initializing service \"" + appName + "\"");
+        LOG.info("TwitterProxyService#onStart() - initializing service \"" + appName + "\"");
         ServiceClient serviceClient = new ServiceClient();
 
         try {
             LOG.info("Attempting to complete deployment of " + appName);
             // make sure we let the Gateway know we have completed our startup
             serviceClient.completeDeployment(new DeploymentResult(true));
-            LOG.info("AppWorksService#onStart() completed");
+            LOG.info("TwitterProxyService#onStart() completed");
         } catch (Exception e) {
             processBootstrapFailure(appName, serviceClient, e);
         }
