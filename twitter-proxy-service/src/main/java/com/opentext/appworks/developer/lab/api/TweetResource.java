@@ -5,8 +5,10 @@ package com.opentext.appworks.developer.lab.api;
 
 import com.opentext.appworks.developer.lab.services.DefaultSearchTermSettingManager;
 import com.opentext.appworks.developer.lab.services.TwitterClientService;
+import com.opentext.otag.service.context.components.AWComponentContext;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.annotation.Lazy;
 
 import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
@@ -18,23 +20,24 @@ import java.util.Optional;
 @Consumes(MediaType.APPLICATION_JSON)
 public class TweetResource {
 
+    private static final Logger LOG = LoggerFactory.getLogger(TweetResource.class);
+
     @Autowired
     private TwitterClientService twitterClientService;
-
-    @Autowired @Lazy
-    private DefaultSearchTermSettingManager defaultSearchTermSettingManager;
 
     @GET
     public Response searchForTweets(@QueryParam("searchTerm") String searchTerm,
                                     @QueryParam("requiresMedia") @DefaultValue("false") String requiresMedia) {
         if (searchTerm == null || searchTerm.isEmpty()) {
-            searchTerm = defaultSearchTermSettingManager.getDefaultSearchTerm();
+            searchTerm = getDefaultSearchTerm();
+            LOG.debug("Resolved search term {}", searchTerm);
         }
+
         try {
             boolean hasMedia = Boolean.valueOf(requiresMedia);
             return Response.ok(twitterClientService.search(searchTerm, hasMedia)).build();
         } catch (Exception e) {
-            return errorResponse(400, "Illegal (non boolean) String value suppplied for \"requiresMedia\" parameter");
+            return errorResponse(400, "Illegal (non boolean) String value supplied for \"requiresMedia\" parameter");
         }
     }
 
@@ -59,6 +62,12 @@ public class TweetResource {
                 status(status)
                 .entity("{ \"error\": \"" + errorMessage + "\" }")
                 .build();
+    }
+
+    private String getDefaultSearchTerm() {
+        String searchTerm;DefaultSearchTermSettingManager settingManager = AWComponentContext.getComponent(DefaultSearchTermSettingManager.class);
+        searchTerm = settingManager.getDefaultSearchTerm();
+        return searchTerm;
     }
 
 }
